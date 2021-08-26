@@ -8,8 +8,6 @@ const cookieParser = require('cookie-parser')
 const app = express()
 const http = require('http').createServer(app);
 
-const authRoutes = require('./api/auth/auth.routes')
-const mondayRoutes = require('./api/monday/monday.routes')
 const mondayWebHookRoutes = require('./api/monday/monday.webhook.routes')
 const config = require('./config')
 
@@ -45,14 +43,8 @@ if (!config.env.isDevelopment) {
 }
 
 // routes
-app.use('/api/auth', authRoutes)
-app.use('/api/monday', mondayRoutes)
 app.use('/', mondayWebHookRoutes)
 
-// app.get('/*', function(req,res) {
-//     // res.sendFile(path.resolve(__dirname, 'public/taskpane.html'))
-//     res.send('HELLOOOOOO')
-// })
 
 const logger = require('./services/logger.service')
 const port = process.env.PORT || 3030;

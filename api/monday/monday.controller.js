@@ -71,7 +71,7 @@ async function getInter(req, res) {
     const targetBoardId = correlateBoard.id
     const targetColId = correlateBoard.items[0].column_values.find(colVal=>colVal.title===originColTitle).id
 
-
+    
     const newVal = `{\"index\": ${statusColumnValue.label.index}}`
     console.log('getInter -> newVal', newVal)
 
