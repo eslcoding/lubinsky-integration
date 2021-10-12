@@ -17,7 +17,6 @@ async function getInter(req, res) {
     const monday = initMondayClient()
     monday.setToken(shortLivedToken)
     const { boardId, itemId, columnId, statusColumnValue } = body.payload?.inputFields
-    // console.log('getInter -> statusColumnValue', statusColumnValue)
 
     var query = `query {
       boards(ids: ${boardId}) {
@@ -65,15 +64,12 @@ async function getInter(req, res) {
     }`
 
     result = await monday.api(query)
-    console.log('getInter -> result', result)
     const correlateBoard = result.data.boards.find(board => board.items.length)
-    console.log('getInter -> correlateBoard', correlateBoard)
     const targetBoardId = correlateBoard.id
     const targetColId = correlateBoard.items[0].column_values.find(colVal => colVal.title === originColTitle).id
 
 
     const newVal = `{\"index\": ${statusColumnValue.label.index}}`
-    console.log('getInter -> newVal', newVal)
 
     query = `mutation {
       change_column_value (board_id: ${targetBoardId}, item_id: ${targetItemId}, column_id: ${targetColId}, value: ${JSON.stringify(newVal)}) {
@@ -82,7 +78,6 @@ async function getInter(req, res) {
     }`
 
     const check = await monday.api(query)
-    console.log('getInter -> check', check)
   } catch (err) {
     console.log('err: ', err);
 
