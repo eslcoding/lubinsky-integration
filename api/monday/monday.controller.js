@@ -17,7 +17,6 @@ async function getInter(req, res) {
     const monday = initMondayClient()
     monday.setToken(shortLivedToken)
     const { boardId, itemId, columnId, statusColumnValue } = body.payload?.inputFields
-    console.log('getInter -> statusColumnValue', statusColumnValue)
     // console.log('getInter -> statusColumnValue', statusColumnValue)
 
     var query = `query {
@@ -39,7 +38,6 @@ async function getInter(req, res) {
     const { items } = result.data.boards[0]
     const { column_values } = items[0]
     const originColTitle = column_values.find(colVal => colVal.id === columnId).title
-    console.log('getInter -> originColTitle', originColTitle)
     // console.log('getInter -> column_values', column_values)
 
     const connectedCol = column_values.find(colVal => colVal.type === 'board-relation')
@@ -48,7 +46,7 @@ async function getInter(req, res) {
     const targetItemId = parsedValue.linkedPulseIds[0].linkedPulseId
 
     query = `query {
-      boards {
+      boards (limit: 2000) {
         id
         name
         items(ids: ${targetItemId}) {
@@ -67,11 +65,13 @@ async function getInter(req, res) {
     }`
 
     result = await monday.api(query)
+    console.log('getInter -> result', result)
     const correlateBoard = result.data.boards.find(board => board.items.length)
+    console.log('getInter -> correlateBoard', correlateBoard)
     const targetBoardId = correlateBoard.id
-    const targetColId = correlateBoard.items[0].column_values.find(colVal=>colVal.title===originColTitle).id
+    const targetColId = correlateBoard.items[0].column_values.find(colVal => colVal.title === originColTitle).id
 
-    
+
     const newVal = `{\"index\": ${statusColumnValue.label.index}}`
     console.log('getInter -> newVal', newVal)
 
